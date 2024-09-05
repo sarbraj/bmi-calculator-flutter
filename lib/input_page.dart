@@ -1,17 +1,25 @@
 import 'package:bmi_calculator/card.dart';
+import 'package:bmi_calculator/card_icon_content.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'constants.dart';
 
 class InputPage extends StatefulWidget {
   @override
   _InputPageState createState() => _InputPageState();
 }
 
-// Can only have a constant values, not something that can be calculated during runtime.
-const bottomContainerHeight = 80.0;
-const activeCardColor = Color(0xFF1D1E33);
-const bottomContainerColor = Color(0xFFEB1555);
+enum Genders {
+  Male,
+  Female,
+}
 
 class _InputPageState extends State<InputPage> {
+  Color maleActiveCardColor = kInactiveCardColor;
+  Color femaleActiveCardColor = kInactiveCardColor;
+  Genders selectedGender = Genders.Male;
+  int height = 165;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,32 +32,120 @@ class _InputPageState extends State<InputPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: ReusableCard(colour: activeCardColor),
+                  child: ReusableCard(
+                      onTapMethod: () => {
+                            setState(() {
+                              selectedGender = Genders.Male;
+                            }),
+                          },
+                      colour: selectedGender == Genders.Male
+                          ? kActiveCardColor
+                          : kInactiveCardColor,
+                      cardChild: CardIconContent(
+                        icon: FontAwesomeIcons.mars,
+                        label: 'MALE',
+                      )),
                 ),
                 Expanded(
-                  child: ReusableCard(colour: activeCardColor),
+                  child: ReusableCard(
+                      onTapMethod: () => {
+                            setState(() {
+                              selectedGender = Genders.Female;
+                            }),
+                          },
+                      colour: selectedGender == Genders.Female
+                          ? kActiveCardColor
+                          : kInactiveCardColor,
+                      cardChild: CardIconContent(
+                        icon: FontAwesomeIcons.venus,
+                        label: 'FEMALE',
+                      )),
                 )
               ],
             ),
           ),
-          Expanded(child: ReusableCard(colour: activeCardColor)),
+
+          // Run diagnostics, can't because intermitent. Service
+
+          Expanded(
+              child: ReusableCard(
+            colour: kInactiveCardColor,
+            cardChild: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'HEIGHT',
+                  style: kLabelStyle,
+                ),
+                Row(
+                  children: [
+                    Text(height.toString(), style: kNumberTextStyle),
+                    Text(
+                      'cm',
+                      style: kLabelStyle,
+                    )
+                  ],
+                ),
+                Slider(
+                  value: height.toDouble(),
+                  min: 120.0,
+                  max: 230.0,
+                  activeColor: kBottomContainerColor,
+                  onChanged: (value) => {
+                    this.setState(() {
+                      height = value.toInt();
+                    })
+                  },
+                )
+              ],
+            ),
+            onTapMethod: () {},
+          )),
           Expanded(
             child: Row(
               children: [
                 Expanded(
-                  child: ReusableCard(colour: activeCardColor),
+                  child: ReusableCard(
+                    colour: kInactiveCardColor,
+                    cardChild: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'WEIGHT',
+                          style: kLabelStyle,
+                        )
+                      ],
+                    ),
+                    onTapMethod: () {},
+                  ),
                 ),
                 Expanded(
-                  child: ReusableCard(colour: activeCardColor),
+                  child: ReusableCard(
+                    colour: kInactiveCardColor,
+                    cardChild: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'AGE',
+                          style:
+                              TextStyle(fontSize: 18, color: Color(0xFF8D8E98)),
+                        )
+                      ],
+                    ),
+                    onTapMethod: () {},
+                  ),
                 )
               ],
             ),
           ),
           Container(
-            color: bottomContainerColor,
+            color: kBottomContainerColor,
             margin: EdgeInsets.only(top: 10),
             width: double.infinity,
-            height: bottomContainerHeight,
+            height: kBottomContainerHeight,
           )
         ],
       ),
