@@ -1,9 +1,12 @@
-import 'package:bmi_calculator/card.dart';
-import 'package:bmi_calculator/card_icon_content.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bmi_calculator/components/bottom_button.dart';
+import 'package:bmi_calculator/components/card.dart';
+import 'package:bmi_calculator/components/card_icon_content.dart';
+import 'package:bmi_calculator/components/round_icon_button.dart';
+import 'package:bmi_calculator/screens/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'constants.dart';
+import '../components/constants.dart';
+import 'package:bmi_calculator/calculator_brain.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -95,9 +98,6 @@ class _InputPageState extends State<InputPage> {
               ],
             ),
           ),
-
-          // Run diagnostics, can't because intermitent. Service
-
           Expanded(
               child: ReusableCard(
             colour: kInactiveCardColor,
@@ -229,39 +229,21 @@ class _InputPageState extends State<InputPage> {
               ],
             ),
           ),
-          Container(
-            color: kBottomContainerColor,
-            margin: EdgeInsets.only(top: 10),
-            width: double.infinity,
-            height: kBottomContainerHeight,
+          BottomButton(
+            onTapMethod: () {
+              CalculatorBrain calc =
+                  CalculatorBrain(height: height, weight: weight);
+              // Navigator.pushNamed(context, '/results');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ResultsPage(calc.calculateBMI(), calc.getResults())));
+            },
+            text: 'Calculate',
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print("Floating button clicked");
-        },
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class RoundIconButton extends StatelessWidget {
-  final VoidCallback onPressMethod;
-  final IconData child;
-
-  const RoundIconButton({required this.child, required this.onPressMethod});
-
-  @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
-      elevation: 6.0,
-      shape: CircleBorder(),
-      fillColor: Color(0xff4c4f5e),
-      onPressed: onPressMethod,
-      constraints: BoxConstraints(minWidth: 56.0, minHeight: 56.0),
-      child: Icon(child),
     );
   }
 }
